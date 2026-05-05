@@ -2,46 +2,51 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 
-// chargement des variables d environnement
+// Charger les variables d'environnement
 require("dotenv").config();
 
-// import de la configuration de la base de donne
+// Import connexion DB
 const connectDB = require("./config/db");
 
-// importation des routes
+// Import routes
 const userRoutes = require("./routes/routes");
 
-// Create an instance of the Express application
+// Initialisation app
 const app = express();
 
-// creation d une port pour le serveur
-const PORT = process.env.PORT || 5020;
+// Port (Render fournit automatiquement PORT)
+const PORT = process.env.PORT || 10000;
 
-//middleware pour parser le corps des requetes en json
+// Middlewares
 app.use(morgan("dev"));
 app.use(express.json());
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3001",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
   }),
 );
 
-//route de teste
-
+// Route test
 app.get("/", (req, res) => {
-  res.send("hello word");
+  res.send("Hello world");
 });
 
-// utilisation des routes
-app.get("/api/ping", (req, res) => res.json({ message: "pong" }));
+// Ping test
+app.get("/api/ping", (req, res) => {
+  res.json({ message: "pong" });
+});
+
+// Routes principales
 app.use("/api", userRoutes);
 
-// demarrage du serveur uniquement apres connexion a MongoDB
+// Démarrage serveur après connexion DB
 const startServer = async () => {
   try {
     await connectDB();
+
     app.listen(PORT, () => {
-      console.log(`server is running on port ${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
   } catch (error) {
     console.error("Server startup failed:", error.message);

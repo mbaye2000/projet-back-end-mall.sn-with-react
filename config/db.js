@@ -1,25 +1,23 @@
 const mongoose = require("mongoose");
 
-const { MONGODB_URI } = process.env;
-
-if (!MONGODB_URI) {
-  console.error("MONGODB_URI is not defined. Vérifie ton fichier .env.");
-  process.exit(1);
-}
-
-// connexion à la base de données MongoDB
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI, {
+    if (!process.env.MONGO_URI) {
+      throw new Error("MONGO_URI is not defined ❌");
+    }
+
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
       serverSelectionTimeoutMS: 10000,
     });
-    console.log("connected to MongoDB");
+
+    console.log("MongoDB connected");
   } catch (err) {
-    console.error("error connecting to MongoDB:", err.message);
-    throw err;
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1);
   }
 };
 
+// Gestion des événements
 mongoose.connection.on("disconnected", () => {
   console.warn("MongoDB disconnected");
 });
