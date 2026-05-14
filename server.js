@@ -15,7 +15,7 @@ const userRoutes = require("./routes/routes");
 const app = express();
 
 // Port (Render fournit automatiquement PORT)
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 5020;
 
 // Middlewares
 app.use(morgan("dev"));
